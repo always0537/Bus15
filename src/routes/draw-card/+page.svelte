@@ -1,3 +1,6 @@
+
+
+
 <svelte:head>
 	<title>DrawCard</title>
 	<meta name="description" content="GetCard" />
