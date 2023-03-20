@@ -4,9 +4,9 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let test;
   return `${$$result.head += `<!-- HEAD_svelte-1ycpfwa_START -->${$$result.title = `<title>CardDex</title>`, ""}<meta name="description" content="CardCollection"><!-- HEAD_svelte-1ycpfwa_END -->`, ""}
 
-<div class="accordion" id="accordionExample"><div class="accordion-item"><h2 class="accordion-header" id="headingOne"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">卡片編號 or 名稱
+<div class="accordion" id="accordionExample"><div class="accordion-item"><h2 class="accordion-header" id="headingOne"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">卡片編號 or 名稱
 			</button></h2>
-		<div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample"><div class="accordion-body"><div class="card"><img${add_attribute("src", img, 0)} class="card-img-top" alt="...">
+		<div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample"><div class="accordion-body"><div class="card"><img${add_attribute("src", img, 0)} class="card-img-top" alt="...">
 					<div class="card-body"><h5 class="card-title">卡片名稱</h5>
 						<button class="card-text">點擊詳細</button></div></div></div></div></div>
 	<div class="accordion-item"><h2 class="accordion-header" id="headingTwo"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">卡片編號 or 名稱
