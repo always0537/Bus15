@@ -9,7 +9,7 @@
 </script>
 <div class="row">
   <div class="col text-center">
-    <button class="btn btn-primary m-2 d-inline">單抽出奇蹟</button>
+    <button class="btn btn-primary m-2 d-inline">單抽出奇蹟測試</button>
   </div>
 </div>
 <div class="row">
