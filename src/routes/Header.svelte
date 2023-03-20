@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/stores";
+	
 	let listBtnCollaspe : Element;
 	let closeList = ()=>{
 		//@ts-ignore
