@@ -1,7 +1,12 @@
 <script lang="ts">
-	import { each } from "svelte/internal";
+	import { each, onMount } from "svelte/internal";
+	import CardDex from "../../models/CardDex";
+	let firstcard: CardDex = new CardDex();
+	onMount(async () => {
+		const res = await fetch('/api/mongodb');
+		firstcard = await res.json();
+	});
 
-	const img = '/30581778_2162740227072882_842558015222579200_o.jpg';
 	let test: Element;
 	const openModal = () => {
 		console.log(test);
@@ -15,7 +20,7 @@
 	<meta name="description" content="CardCollection" />
 </svelte:head>
 
-<div class="accordion d-block d-sm-none" id="accordionExample">
+<div class="accordion" id="accordionExample">
 	{#each Array(3) as card, index}
 	<div class="accordion-item">
 		<h2 class="accordion-header" id="headingOne">
@@ -38,7 +43,7 @@
 		>
 			<div class="accordion-body">
 				<div class="card">
-					<img src={img} class="card-img-top" alt="..." />
+					<img src={firstcard.img} class="card-img-top" alt="..." />
 					<div class="card-body">
 						<h5 class="card-title">卡片名稱</h5>
 						<button class="card-text" on:click={openModal}>點擊詳細</button>
@@ -66,13 +71,13 @@
 			<div class="modal-body">
 				<div class="card">
 					<img
-						src={img}
+						src={firstcard.img}
 						class="card-img-top"
 						alt="..."
 					/>
 					<div class="card-body">
 						<p class="card-text">
-							卡片詳細說明：測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試
+							{firstcard.description}
 						</p>
 					</div>
 				</div>
