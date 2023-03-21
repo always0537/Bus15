@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { each } from "svelte/internal";
+
 	const img = '/30581778_2162740227072882_842558015222579200_o.jpg';
 	let test: Element;
 	const openModal = () => {
@@ -13,7 +15,8 @@
 	<meta name="description" content="CardCollection" />
 </svelte:head>
 
-<div class="accordion" id="accordionExample">
+<div class="accordion d-block d-sm-none" id="accordionExample">
+	{#each Array(3) as card, index}
 	<div class="accordion-item">
 		<h2 class="accordion-header" id="headingOne">
 			<button
@@ -44,66 +47,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="accordion-item">
-		<h2 class="accordion-header" id="headingTwo">
-			<button
-				class="accordion-button collapsed"
-				type="button"
-				data-bs-toggle="collapse"
-				data-bs-target="#collapseTwo"
-				aria-expanded="false"
-				aria-controls="collapseTwo"
-			>
-				卡片編號 or 名稱
-			</button>
-		</h2>
-		<div
-			id="collapseTwo"
-			class="accordion-collapse collapse"
-			aria-labelledby="headingTwo"
-			data-bs-parent="#accordionExample"
-		>
-			<div class="accordion-body">
-				<div class="card">
-					<img src={img} class="card-img-top" alt="..." />
-					<div class="card-body">
-						<h5 class="card-title">卡片名稱</h5>
-						<p class="card-text">點擊詳細</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="accordion-item">
-		<h2 class="accordion-header" id="headingThree">
-			<button
-				class="accordion-button collapsed"
-				type="button"
-				data-bs-toggle="collapse"
-				data-bs-target="#collapseThree"
-				aria-expanded="false"
-				aria-controls="collapseThree"
-			>
-				卡片編號 or 名稱
-			</button>
-		</h2>
-		<div
-			id="collapseThree"
-			class="accordion-collapse collapse"
-			aria-labelledby="headingThree"
-			data-bs-parent="#accordionExample"
-		>
-			<div class="accordion-body">
-				<div class="card">
-					<img src={img} class="card-img-top" alt="..." />
-					<div class="card-body">
-						<h5 class="card-title">卡片名稱</h5>
-						<p class="card-text">點擊詳細</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	{/each}
 </div>
 <div
 	bind:this={test}
