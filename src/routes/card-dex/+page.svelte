@@ -1,5 +1,12 @@
 <script lang="ts">
-	const img = '/30581778_2162740227072882_842558015222579200_o.jpg';
+	import { each, onMount } from "svelte/internal";
+	import CardDex from "../../models/CardDex";
+	let firstcard: CardDex = new CardDex();
+	onMount(async () => {
+		const res = await fetch('/api/mongodb');
+		firstcard = await res.json();
+	});
+
 	let test: Element;
 	const openModal = () => {
 		console.log(test);
@@ -14,6 +21,7 @@
 </svelte:head>
 
 <div class="accordion" id="accordionExample">
+	{#each Array(3) as card, index}
 	<div class="accordion-item">
 		<h2 class="accordion-header" id="headingOne">
 			<button
@@ -35,7 +43,7 @@
 		>
 			<div class="accordion-body">
 				<div class="card">
-					<img src={img} class="card-img-top" alt="..." />
+					<img src={firstcard.img} class="card-img-top" alt="..." />
 					<div class="card-body">
 						<h5 class="card-title">卡片名稱</h5>
 						<button class="card-text" on:click={openModal}>點擊詳細</button>
@@ -44,66 +52,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="accordion-item">
-		<h2 class="accordion-header" id="headingTwo">
-			<button
-				class="accordion-button collapsed"
-				type="button"
-				data-bs-toggle="collapse"
-				data-bs-target="#collapseTwo"
-				aria-expanded="false"
-				aria-controls="collapseTwo"
-			>
-				卡片編號 or 名稱
-			</button>
-		</h2>
-		<div
-			id="collapseTwo"
-			class="accordion-collapse collapse"
-			aria-labelledby="headingTwo"
-			data-bs-parent="#accordionExample"
-		>
-			<div class="accordion-body">
-				<div class="card">
-					<img src={img} class="card-img-top" alt="..." />
-					<div class="card-body">
-						<h5 class="card-title">卡片名稱</h5>
-						<p class="card-text">點擊詳細</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="accordion-item">
-		<h2 class="accordion-header" id="headingThree">
-			<button
-				class="accordion-button collapsed"
-				type="button"
-				data-bs-toggle="collapse"
-				data-bs-target="#collapseThree"
-				aria-expanded="false"
-				aria-controls="collapseThree"
-			>
-				卡片編號 or 名稱
-			</button>
-		</h2>
-		<div
-			id="collapseThree"
-			class="accordion-collapse collapse"
-			aria-labelledby="headingThree"
-			data-bs-parent="#accordionExample"
-		>
-			<div class="accordion-body">
-				<div class="card">
-					<img src={img} class="card-img-top" alt="..." />
-					<div class="card-body">
-						<h5 class="card-title">卡片名稱</h5>
-						<p class="card-text">點擊詳細</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	{/each}
 </div>
 <div
 	bind:this={test}
@@ -122,13 +71,13 @@
 			<div class="modal-body">
 				<div class="card">
 					<img
-						src={img}
+						src={firstcard.img}
 						class="card-img-top"
 						alt="..."
 					/>
 					<div class="card-body">
 						<p class="card-text">
-							卡片詳細說明：測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試測試
+							{firstcard.description}
 						</p>
 					</div>
 				</div>
