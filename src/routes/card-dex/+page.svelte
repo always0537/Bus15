@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { each, onMount } from "svelte/internal";
 	import CardDex from "../../models/CardDex";
+	import {Modal} from 'bootstrap';
+
 	let firstcard: CardDex = new CardDex();
 	onMount(async () => {
 		const res = await fetch('/api/mongodb');
@@ -10,8 +12,7 @@
 	let test: Element;
 	const openModal = () => {
 		console.log(test);
-		//@ts-ignore
-		new bootstrap.Modal(test).show();
+		new Modal(test).show();
 	};
 </script>
 

@@ -7,7 +7,7 @@ const client = new MongoClient(MongoDb_ConnectionString);
 
 export async function GET(): Promise<Response> {
     try{
-        client.connect();
+        await client.connect();
         const database = client.db("BusCards");
         const cardDexes = database.collection<CardDex>("CardDex");
         const card = await cardDexes.findOne<CardDex>();
