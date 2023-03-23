@@ -3,11 +3,11 @@
 	
 	let listBtnCollaspe : Element;
 	let closeList = ()=>{
-		//@ts-ignore
 		let collaspe = new bootstrap.Collapse(listBtnCollaspe);
 		collaspe.toggle();
 	}
 </script>
+<header>
 	<nav class="navbar navbar-expand-lg bg-light">
 		<div class="container-fluid">
 			<button 
@@ -18,10 +18,10 @@
 				aria-controls="navbarSupportedContent"
 				aria-expanded="false"
 				aria-label="Toggle navigation"
-			>
+				>
 				<span class="navbar-toggler-icon" ></span>
 			</button>
-			<div bind:this = {listBtnCollaspe} class="collapse navbar-collapse" id="navbarSupportedContent">
+			<div bind:this={listBtnCollaspe} class="collapse navbar-collapse" id="navbarSupportedContent"></div>
 			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 				<li
 					class="nav-item"
@@ -56,4 +56,4 @@
 			</ul>
 		</div>
 	</nav>
-
+</header>
