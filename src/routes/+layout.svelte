@@ -1,5 +1,4 @@
 <script lang="ts">
-	//@ts-ignore
 	import Header from "./Header.svelte";
 </script>
 <div>
