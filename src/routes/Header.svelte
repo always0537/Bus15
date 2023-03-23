@@ -21,7 +21,11 @@
 				>
 				<span class="navbar-toggler-icon" ></span>
 			</button>
+<<<<<<< HEAD
 			<div bind:this={listBtnCollaspe} class="collapse navbar-collapse" id="navbarSupportedContent"></div>
+=======
+			<div bind:this = {listBtnCollaspe} class="collapse navbar-collapse" id="navbarSupportedContent"></div>
+>>>>>>> 59051ad774b6b239114738b267ae42b99a11161d
 			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 				<li
 					class="nav-item"
