@@ -1,19 +1,31 @@
 <script lang="ts">
-	import { each, onMount } from "svelte/internal";
-	import CardDex from "../../models/CardDex";
-	import {Modal} from 'bootstrap';
-
+	import type { PageData } from './$types';
+	import CardDex from '@Models/CardDex';
+	import AccordionItem from '@Components/AccordionItem.svelte';
+	import Card from '@Components/Card.svelte';
+	import { each, identity, onMount } from 'svelte/internal';
+	import type { Modal } from 'bootstrap';
+	import type CardRecord from '@Models/CardRecord';
+	let modal: Modal;
+	let modalElement: Element;
+	let modalCard : CardDex;
+	let openModal: any;
 	let firstcard: CardDex = new CardDex();
+	
 	onMount(async () => {
-		const res = await fetch('/api/mongodb');
-		firstcard = await res.json();
+		let bootstrap = await import('bootstrap')
+		modal = new bootstrap.Modal(modalElement);
+		openModal = (card : CardDex) => {
+			modalCard = card;
+			modal.show();
+		};
+		
+		// const res = await fetch('/api/mongodb');
+		// firstcard = await res.json();
 	});
-
-	let test: Element;
-	const openModal = () => {
-		console.log(test);
-		new Modal(test).show();
-	};
+	export let data: PageData;
+	export let cardList : CardDex[] = JSON.parse(data.CardList);
+	export let myCardList : CardRecord[] = JSON.parse(data.MyCardList);
 </script>
 
 <svelte:head>
@@ -22,41 +34,20 @@
 </svelte:head>
 
 <div class="accordion" id="accordionExample">
-	{#each Array(3) as card, index}
-	<div class="accordion-item">
-		<h2 class="accordion-header" id="headingOne">
-			<button
-				class="accordion-button collapsed"
-				type="button"
-				data-bs-toggle="collapse"
-				data-bs-target="#collapseOne"
-				aria-expanded="false"
-				aria-controls="collapseOne"
-			>
-				卡片編號 or 名稱
-			</button>
-		</h2>
-		<div
-			id="collapseOne"
-			class="accordion-collapse collapse"
-			aria-labelledby="headingOne"
-			data-bs-parent="#accordionExample"
-		>
-			<div class="accordion-body">
-				<div class="card">
-					<img src={firstcard.img} class="card-img-top" alt="..." />
-					<div class="card-body">
-						<h5 class="card-title">卡片名稱</h5>
-						<button class="card-text" on:click={openModal}>點擊詳細</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	{#each cardList as card}
+		<AccordionItem Title={`${card._id}-${card.name}`} ID={card._id?.toString()} 
+			Qty={myCardList.filter(n=> n.cardId === card._id).reduce((sum, cardRecord)=>{
+				sum += cardRecord.cardStatus === 9 ? 0 : 1;
+				return sum;
+			}, 0)}>
+				<Card cardTitle={card.name} imgPath={card.img}>
+					<button on:click={openModal(card)}>點擊詳細</button>
+				</Card>
+		</AccordionItem>
 	{/each}
 </div>
 <div
-	bind:this={test}
+	bind:this={modalElement}
 	class="modal fade"
 	id="exampleModal"
 	tabindex="-1"
@@ -66,22 +57,13 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="exampleModalLabel">卡片名稱</h1>
+				<h1 class="modal-title fs-5" id="exampleModalLabel">{modalCard?.name}</h1>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
 			</div>
 			<div class="modal-body">
-				<div class="card">
-					<img
-						src={firstcard.img}
-						class="card-img-top"
-						alt="..."
-					/>
-					<div class="card-body">
-						<p class="card-text">
-							{firstcard.description}
-						</p>
-					</div>
-				</div>
+				<Card cardTitle={modalCard?.name} imgPath={modalCard?.img}>
+					<p class="card-text">{modalCard?.description}</p>
+				</Card>
 			</div>
 			<div class="modal-footer justify-content-center">
 				<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Button1</button>

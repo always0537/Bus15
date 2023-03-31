@@ -1,5 +1,10 @@
 <script lang="ts">
 	import Header from "./Header.svelte";
+	import { onMount } from 'svelte';
+	let bootstrap : any;
+	onMount(async () => {
+		bootstrap = await import('bootstrap');
+	});
 </script>
 <div>
 	<header>
