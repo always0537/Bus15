@@ -5,7 +5,6 @@
 	import Card from '@Components/Card.svelte';
 	import { each, identity, onMount } from 'svelte/internal';
 	import type { Modal } from 'bootstrap';
-	import type CardRecord from '@Models/CardRecord';
 	let modal: Modal;
 	let modalElement: Element;
 	let modalCard : CardDex;
@@ -25,7 +24,6 @@
 	});
 	export let data: PageData;
 	export let cardList : CardDex[] = JSON.parse(data.CardList);
-	export let myCardList : CardRecord[] = JSON.parse(data.MyCardList);
 </script>
 
 <svelte:head>
@@ -36,10 +34,7 @@
 <div class="accordion" id="accordionExample">
 	{#each cardList as card}
 		<AccordionItem Title={`${card._id}-${card.name}`} ID={card._id?.toString()} 
-			Qty={myCardList.filter(n=> n.cardId === card._id).reduce((sum, cardRecord)=>{
-				sum += cardRecord.cardStatus === 9 ? 0 : 1;
-				return sum;
-			}, 0)}>
+			Qty={card.qty}>
 				<Card cardTitle={card.name} imgPath={card.img}>
 					<button on:click={openModal(card)}>點擊詳細</button>
 				</Card>
