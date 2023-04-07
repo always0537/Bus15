@@ -5,11 +5,13 @@
 	onMount(async () => {
 		bootstrap = await import('bootstrap');
 	});
+
+	export let data;
 </script>
 
 <div>
 	<header>
-		<Header />
+		<Header isLogin={data.isLogin}/>
 	</header>
 
 	<main>
