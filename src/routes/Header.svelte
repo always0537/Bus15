@@ -15,6 +15,8 @@
 			collaspe.hide();
 		};
 	});
+
+	export let isLogin : boolean;
 </script>
 
 <header>
@@ -34,6 +36,7 @@
 					<li class="nav-item" aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
 						<a class="nav-link active" href="/" on:click={toggleList()} >Home</a>
 					</li>
+					{#if isLogin == true}
 					<li class="nav-item" aria-current={$page.url.pathname === '/shop' ? 'page' : undefined}>
 						<a class="nav-link active" href="/shop" on:click={toggleList()}>商店</a>
 					</li>
@@ -52,6 +55,13 @@
 					>
 						<a class="nav-link active" href="/draw-card" on:click={toggleList()}>我要抽卡</a>
 					</li>
+					<li
+					class="nav-item"
+					aria-current={$page.url.pathname === '/logout' ? 'page' : undefined}
+				>
+					<a class="nav-link active" href="/logout" on:click={toggleList()}>登出</a>
+				</li>
+					{/if}
 				</ul>
 			</div>
 		</div>
