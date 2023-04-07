@@ -3,10 +3,10 @@ export default class Queue<T> {
   constructor() {
 
   }
-  enqueue(item:T): void {
+  enqueue(item: T): void {
     this.QueueLine.push(item);
   }
-  dequeue() : T | undefined{
+  dequeue(): T | undefined {
     return this.QueueLine.shift();
   }
   tryPeek(): T | undefined {

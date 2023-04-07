@@ -7,23 +7,23 @@
 	import type { Modal } from 'bootstrap';
 	let modal: Modal;
 	let modalElement: Element;
-	let modalCard : CardDex;
+	let modalCard: CardDex;
 	let openModal: any;
 	let firstcard: CardDex = new CardDex();
-	
+
 	onMount(async () => {
-		let bootstrap = await import('bootstrap')
+		let bootstrap = await import('bootstrap');
 		modal = new bootstrap.Modal(modalElement);
-		openModal = (card : CardDex) => {
+		openModal = (card: CardDex) => {
 			modalCard = card;
 			modal.show();
 		};
-		
+
 		// const res = await fetch('/api/mongodb');
 		// firstcard = await res.json();
 	});
 	export let data: PageData;
-	export let cardList : CardDex[] = JSON.parse(data.CardList);
+	export let cardList: CardDex[] = JSON.parse(data.CardList);
 </script>
 
 <svelte:head>
@@ -33,11 +33,10 @@
 
 <div class="accordion" id="accordionExample">
 	{#each cardList as card}
-		<AccordionItem Title={`${card._id}-${card.name}`} ID={card._id?.toString()} 
-			Qty={card.qty}>
-				<Card cardTitle={card.name} imgPath={card.img}>
-					<button on:click={openModal(card)}>點擊詳細</button>
-				</Card>
+		<AccordionItem Title={`${card._id}-${card.name}`} ID={card._id?.toString()} Qty={card.qty}>
+			<Card cardTitle={card.name} imgPath={card.img}>
+				<button on:click={openModal(card)}>點擊詳細</button>
+			</Card>
 		</AccordionItem>
 	{/each}
 </div>
