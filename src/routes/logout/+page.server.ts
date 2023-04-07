@@ -1,5 +1,5 @@
-export const load = (async ({cookies}) => {
-    cookies.delete('lineId');
+import { logout } from '@Models/AuthToken.js';
 
-    return {};
+export const load = (async () => {
+    logout();
 });
