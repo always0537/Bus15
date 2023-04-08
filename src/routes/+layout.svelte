@@ -11,7 +11,7 @@
 
 <div>
 	<header>
-		<Header isLogin={data.isLogin}/>
+		<Header isLogin={data.isLogin} />
 	</header>
 
 	<main>
