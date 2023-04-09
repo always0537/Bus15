@@ -1,10 +1,8 @@
 import CardDex from '@Models/CardDex';
 import type CardRecord from '@Models/CardRecord';
 
-import type { ObjectId } from "mongodb"
 import type { PageServerLoad } from './$types';
-import { json } from 'node:stream/consumers';
-import { MongoDb_ConnectionString } from '$env/static/private';
+import { MongoDb_ConnectionString, playerID } from '$env/static/private';
 import { MongoClient } from 'mongodb';
 
 const client = new MongoClient(MongoDb_ConnectionString);
@@ -13,8 +11,7 @@ export const load = (async () => {
 
   let db = client.db("BusCards");
   let allCardList: CardDex[] = await db.collection("CardDex").find<CardDex>({}).toArray();
-  let myCardList: CardRecord[] = await db.collection("CardRecord").find<CardRecord>({ cardStatus: { $ne: 9 } }).toArray();
-
+  let myCardList: CardRecord[] = await db.collection("CardRecord").find<CardRecord>({ playerId: playerID, cardStatus: { $ne: 9 } }).toArray();
   let showList: CardDex[] = new Array();
   for (let i: number = 0; i < allCardList.length; i++) {
     let cardQty = myCardList.filter(n => n.cardId === allCardList[i]._id).length;

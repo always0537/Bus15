@@ -5,6 +5,7 @@
 	import Card from '@Components/Card.svelte';
 	import { each, identity, onMount } from 'svelte/internal';
 	import type { Modal } from 'bootstrap';
+
 	let modal: Modal;
 	let modalElement: Element;
 	let modalCard: CardDex;
@@ -22,8 +23,9 @@
 		// const res = await fetch('/api/mongodb');
 		// firstcard = await res.json();
 	});
+
 	export let data: PageData;
-	export let cardList: CardDex[] = JSON.parse(data.CardList);
+	let cardList: CardDex[] = JSON.parse(data.CardList);
 </script>
 
 <svelte:head>

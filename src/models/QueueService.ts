@@ -1,7 +1,7 @@
 import Queue from '@Models/Queue'
 import type CardDex from './CardDex';
 
-export default class QueueService<T, O> {
+export default class QueueService<O> {
   private static QueueLine: Queue<string> = new Queue<string>();
   constructor() {
 
@@ -11,7 +11,7 @@ export default class QueueService<T, O> {
     QueueService.QueueLine.enqueue(id);
     try {
       while (QueueService.QueueLine.tryPeek() !== id) {
-        await new Promise((resolve) => setTimeout(resolve, 50))
+        await new Promise((resolve) => setTimeout(resolve, 20))
       }
       let result = await doSome();
       return result;
@@ -32,5 +32,5 @@ export default class QueueService<T, O> {
 }
 
 interface func<O> {
-  (): Promise<O> | undefined;
+  (): Promise<O | undefined>;
 }

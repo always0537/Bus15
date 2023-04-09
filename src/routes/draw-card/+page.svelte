@@ -1,21 +1,34 @@
 <script lang="ts">
+	import Card from '@Components/Card.svelte';
+	import type CardDex from '@Models/CardDex';
+	import { LoadingView } from '@Models/LoadingView';
+	import type { Modal } from 'bootstrap';
 	import { onMount } from 'svelte';
-	let drawCard1: Function;
-	onMount(() => {
-		drawCard1 = async (): Promise<void> => {
-			let jsonresult = await fetch('/api/draw-card1', {
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				method: 'post'
-			});
-			console.log(jsonresult);
-			let result = await jsonresult.json();
-			console.log(result);
-		};
+
+	let resultList: CardDex[] = new Array();
+	let resultModal: Modal;
+	onMount(async () => {
+		let bootstrap = await import('bootstrap');
+		resultModal = new bootstrap.Modal(document.getElementById('draw_result')!);
 	});
 
-	const drawCard10: Function = async (): Promise<void> => {};
+	const drawCard = async (qty: number): Promise<void> => {
+		LoadingView?.show();
+		let api = qty > 1 ? '/api/draw-card10' : '/api/draw-card1';
+		let response = await fetch(api, {
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			method: 'post'
+		});
+		let result = await response.json();
+		resultList = result.ReturnValue;
+		LoadingView?.hide();
+		if (resultList.length === 0) {
+			return;
+		}
+		resultModal.show();
+	};
 </script>
 
 <svelte:head>
@@ -24,11 +37,53 @@
 </svelte:head>
 <div class="row">
 	<div class="col text-center">
-		<button class="btn btn-primary m-2 d-inline" on:click={drawCard1()}>單抽出奇蹟測試</button>
+		<button
+			class="btn btn-primary m-2 d-inline"
+			on:click={() => {
+				drawCard(1);
+			}}>單抽出奇蹟測試</button
+		>
 	</div>
 </div>
 <div class="row">
 	<div class="col text-center">
-		<button class="btn btn-danger m-2 d-inline">一次來十張</button>
+		<button
+			class="btn btn-danger m-2 d-inline"
+			on:click={() => {
+				drawCard(10);
+			}}>一次來十張</button
+		>
+	</div>
+</div>
+<div>
+	<div
+		class="modal fade"
+		id="draw_result"
+		data-bs-backdrop="static"
+		data-bs-keyboard="false"
+		tabindex="-1"
+		aria-hidden="true"
+	>
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header bg-light">
+					<h5 class="modal-title">抽卡結果</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" />
+				</div>
+				<div class="modal-body">
+					{#if resultList.length == 1}
+						<Card cardTitle={resultList[0].name} imgPath={resultList[0].img} />
+					{:else}
+						<div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-4">
+							{#each resultList as card}
+								<div class="col">
+									<Card cardTitle={card.name} imgPath={card.img} />
+								</div>
+							{/each}
+						</div>
+					{/if}
+				</div>
+			</div>
+		</div>
 	</div>
 </div>

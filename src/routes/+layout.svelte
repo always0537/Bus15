@@ -1,9 +1,12 @@
 <script lang="ts">
+	import type { Modal } from 'bootstrap';
 	import Header from './Header.svelte';
 	import { onMount } from 'svelte';
+	import { LoadingViewStore } from '@Models/LoadingView';
 	let bootstrap: any;
 	onMount(async () => {
 		bootstrap = await import('bootstrap');
+		LoadingViewStore.set(new bootstrap.Modal(document.getElementById('LoadingView')));
 	});
 
 	export let data;
@@ -25,4 +28,25 @@
 			<p>version 0.0.1</p>
 		</div>
 	</footer>
+</div>
+<div>
+	<div
+		class="modal fade"
+		id="LoadingView"
+		data-bs-backdrop="static"
+		data-bs-keyboard="false"
+		tabindex="-1"
+		aria-hidden="true"
+	>
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="text-center">
+					<div class="spinner-border text-primary mt-4" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+				<div class="modal-body text-center">處理中...</div>
+			</div>
+		</div>
+	</div>
 </div>

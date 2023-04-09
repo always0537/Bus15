@@ -1,18 +1,49 @@
 import QueueService from "@Models/QueueService";
 import { MongoDb_ConnectionString } from '$env/static/private';
 import { MongoClient } from 'mongodb';
+import type { TransactionOptions } from 'mongodb';
+
 import CardRecord from "./CardRecord";
+import type { CardDexWithRecordGroup, ICardRecordGroup } from "@Models/CardDex";
+import { insert } from "svelte/internal";
+import type CardDex from "@Models/CardDex";
+import User from "@Models/User";
 
 const client = new MongoClient(MongoDb_ConnectionString);
-export default async function DrawCard(playerID: number): Promise<any> {
-  let queue_draw = new QueueService<any, any>();
-  let queueID = playerID + Date.now.toString();
 
-  let result = await queue_draw.joinAndWaitForResult(queueID, async () => {
+export class QueueDrawCardReturnObj<T>{
+  public Success: boolean = false;
+  public Message: string = "";
+  public ReturnValue: T | undefined;
+}
+
+export default async function DrawCard(playerID: string, drawQty: number = 1): Promise<QueueDrawCardReturnObj<CardDex[] | undefined>> {
+
+  let queue_draw = new QueueService<QueueDrawCardReturnObj<CardDex[] | undefined>>();
+  let queueID = playerID + new Date().getTime().toString();
+  let result = await queue_draw.joinAndWaitForResult(queueID, async (): Promise<QueueDrawCardReturnObj<CardDex[] | undefined>> => {
+
+    let returnObj: QueueDrawCardReturnObj<CardDex[] | undefined> = new QueueDrawCardReturnObj();
+
     await client.connect();
 
     let db = client.db("BusCards");
-    let cardsInfo = await db.collection("CardDex").aggregate([{
+    let userInfo: User | null = await db.collection<User>("Users").findOne({ "_id": playerID });
+
+    if (userInfo === null) {
+      returnObj.Message = "使用者名錯誤"
+      client.close()
+      return returnObj;
+    }
+    userInfo = new User(userInfo._id, userInfo.realName, userInfo.lineName, userInfo.picture, userInfo.lastDraw);
+
+    if (userInfo.leftDrawTimes <= 0) {
+      returnObj.Message = "已無抽卡次數"
+      client.close()
+      return returnObj;
+    }
+
+    let cardsInfo = await db.collection("CardDex").aggregate<CardDexWithRecordGroup>([{
       $lookup: {
         from: "CardRecord",
         localField: "_id",
@@ -30,34 +61,70 @@ export default async function DrawCard(playerID: number): Promise<any> {
             },
           },
         ],
-        as: "cardRecord",
+        as: "cardRecordGroup",
       }
     },]).toArray();
-    let SSRCards = cardsInfo.filter(n => n.level === 3 && n.cardRecord.reduce((sum: number, recordGroup: any) => {
-      if (recordGroup._id !== 9) {
-        sum += recordGroup.count;
-      }
-      return sum;
-    }, 0) < n.limitQty);
-    let SRCards = cardsInfo.filter(n => n.level === 2 && n.cardRecord.reduce((sum: number, recordGroup: any) => {
-      if (recordGroup._id !== 9) {
-        sum += recordGroup.count;
-      }
-      return sum;
-    }, 0) < n.limitQty);
-    let RCards = cardsInfo.filter(n => n.level === 1);
-    //70- R, 71-95 SR, 95+ SSR
-    let getCardLevel = Math.floor(Math.random() * 100);
-    console.log(getCardLevel)
-    let targetCardPool = getCardLevel >= 95 && SSRCards.length > 0 ? SSRCards :
-      getCardLevel >= 70 && SRCards.length > 0 ? SRCards : RCards;
 
-    let getCard = targetCardPool[Math.floor(Math.random() * targetCardPool.length)];
-    let insertResult = await db.collection("CardRecord").insertOne({ playerId: playerID, cardStatus: 1, cardId: getCard._id, sellPrice: 0 })
-    client.close();
+    let getCardTotalQty = (cardList: ICardRecordGroup[] | undefined): number => {
+      return cardList?.reduce((sum: number, recordGroup: any) => {
+        if (recordGroup._id !== 9) {
+          sum += recordGroup.count;
+        }
+        return sum;
+      }, 0) ?? 0;
+    }
 
-    return insertResult;
+    let getCardList: CardDexWithRecordGroup[] = new Array();
+
+    for (let i = 0; i < (drawQty === 1 ? 1 : (userInfo.leftDrawTimes > drawQty) ? drawQty : userInfo.leftDrawTimes); i++) {
+      let SSRCards = cardsInfo.filter(n => n.level === 3 && getCardTotalQty(n.cardRecordGroup) < n.limitQty);
+      let SRCards = cardsInfo.filter(n => n.level === 2 && getCardTotalQty(n.cardRecordGroup) < n.limitQty);
+      let RCards = cardsInfo.filter(n => n.level === 1);
+      //70- R, 71-95 SR, 95+ SSR
+      let getCardLevel = Math.floor(Math.random() * 100);
+      let targetCardPool = getCardLevel >= 95 && SSRCards.length > 0 ? SSRCards :
+        getCardLevel >= 70 && SRCards.length > 0 ? SRCards : RCards;
+
+      let getCard: CardDexWithRecordGroup = targetCardPool[Math.floor(Math.random() * targetCardPool.length)];
+      getCard.limitQty -= 1;
+      getCardList.push(getCard);
+    }
+
+    const db_session = client.startSession();
+    const db_transactionOptions: TransactionOptions = {
+      readPreference: 'primary',
+      readConcern: { level: 'local' },
+      writeConcern: { w: 'majority' }
+    };
+    try {
+      await db_session.withTransaction(async () => {
+        for (let i = 0; i < getCardList.length; i++) {
+          let getCard = getCardList[i];
+          let insertResult = await db.collection("CardRecord").insertOne({ playerId: playerID, cardStatus: 1, cardId: getCard._id, sellPrice: 0 }, { session: db_session })
+          if (!insertResult.acknowledged) {
+
+            throw "卡片資料新增失敗";
+          }
+        }
+        let updateResult = await db.collection<User>("Users").updateOne({ "_id": playerID }, { $set: { "lastDraw": (userInfo!.formatLastDraw + getCardList.length) } }, { session: db_session })
+        if (!updateResult.acknowledged) {
+          throw "卡片資料新增失敗";
+        }
+      }, db_transactionOptions)
+    } catch (error: any) {
+      returnObj.Message = typeof error === "string" ? error : "資料寫入異常";
+      return returnObj;
+    }
+    finally {
+      await db_session.endSession();
+      client.close();
+    }
+    returnObj.Success = true;
+    returnObj.ReturnValue = getCardList;
+    return returnObj;
   });
+  let undefinedResult = new QueueDrawCardReturnObj<CardDex[]>();
+  undefinedResult.Message = "抽卡錯誤";
 
-  return result;
+  return result ?? undefinedResult;
 }
