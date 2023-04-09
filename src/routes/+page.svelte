@@ -2,12 +2,12 @@
     export let data;
 
     function lineLogin(){
-        window.location.href = data.lineLoginLink!;
+        window.location.href = data.lineLoginLink;
     }
 </script>
 
-{#if data.isLogin == false}
 <div class="container-md text-center" style="paddind: 3rem;">
+    {#if data.isLogin == false}
     <form method="POST">
         <div class="row m-3">
             <button type="button" class="btn btn-success" on:click={lineLogin}>
@@ -20,5 +20,5 @@
             </button>
         </div>
     </form>
+    {/if}
 </div>
-{/if}

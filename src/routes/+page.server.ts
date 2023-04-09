@@ -1,7 +1,6 @@
 import * as env from '$env/static/private';
-import { store } from '@Models/AuthToken';
-import User from '@Models/User.js';
-
+import * as line from '../util/LineUtil';
+import { setContext } from 'svelte';
 
 const lineLoginLink: string = (`https://access.line.me/oauth2/v2.1/authorize?response_type=code
 &client_id=${env.LINE_client_id}
@@ -9,22 +8,12 @@ const lineLoginLink: string = (`https://access.line.me/oauth2/v2.1/authorize?res
 &state=login
 &scope=openid%20profile`);
 
-export const load = (async ({ cookies, url }) => {
-    const loginId = cookies.get('lineId');
-    const code = url.searchParams.get('code');
-    let isLogin: boolean = false;
-
-    if (loginId)
-
-        return {
-            lineLoginLink: lineLoginLink,
-            isLogin: isLogin
-        };
+export const load = (async ({cookies, url}) => {
+    return {
+        lineLoginLink: lineLoginLink,
+    };
 })
 
 export const actions = {
-    loginInDev: async (event) => {
-        const user = new User('test', 'test', 'test', null);
-        store.set(user);
-    }
+    
 }

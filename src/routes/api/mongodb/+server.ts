@@ -3,6 +3,7 @@ import { MongoDb_ConnectionString } from '$env/static/private';
 
 import { MongoClient } from 'mongodb';
 import type CardDex from '../../../models/CardDex';
+import type User from '../../../models/User';
 
 const client = new MongoClient(MongoDb_ConnectionString);
 
