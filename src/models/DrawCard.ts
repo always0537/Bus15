@@ -17,7 +17,7 @@ export class QueueDrawCardReturnObj<T>{
   public ReturnValue: T | undefined;
 }
 
-export default async function DrawCard(playerID: string, drawQty: number = 1): Promise<QueueDrawCardReturnObj<CardDex[] | undefined>> {
+export default async function DrawCard(playerID: string, drawQty: number = 1, save: boolean = true): Promise<QueueDrawCardReturnObj<CardDex[] | undefined>> {
 
   let queue_draw = new QueueService<QueueDrawCardReturnObj<CardDex[] | undefined>>();
   let queueID = playerID + new Date().getTime().toString();
@@ -89,7 +89,11 @@ export default async function DrawCard(playerID: string, drawQty: number = 1): P
       getCard.limitQty -= 1;
       getCardList.push(getCard);
     }
-
+    if (!save) {
+      returnObj.Success = true;
+      returnObj.ReturnValue = getCardList;
+      return returnObj;
+    }
     const db_session = client.startSession();
     const db_transactionOptions: TransactionOptions = {
       readPreference: 'primary',

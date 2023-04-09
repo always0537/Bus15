@@ -13,6 +13,7 @@
 	});
 
 	const drawCard = async (qty: number): Promise<void> => {
+		let InitStart = Date.now();
 		LoadingView?.show();
 		let api = qty > 1 ? '/api/draw-card10' : '/api/draw-card1';
 		let response = await fetch(api, {
@@ -27,7 +28,23 @@
 		if (resultList.length === 0) {
 			return;
 		}
+
 		resultModal.show();
+		console.log(`takeTime : ${Date.now() - InitStart}`);
+	};
+	const drawCard1 = async (): Promise<void> => {
+		let InitStart = Date.now();
+
+		LoadingView?.show();
+		let response = await fetch('/api/draw-card10');
+		let result = await response.json();
+		resultList = result.ReturnValue;
+		LoadingView?.hide();
+		if (resultList.length === 0) {
+			return;
+		}
+		resultModal.show();
+		console.log(`takeTime : ${Date.now() - InitStart}`);
 	};
 </script>
 
@@ -55,6 +72,17 @@
 		>
 	</div>
 </div>
+<div class="row">
+	<div class="col text-center">
+		<button
+			class="btn btn-danger m-2 d-inline"
+			on:click={() => {
+				drawCard1();
+			}}>test</button
+		>
+	</div>
+</div>
+
 <div>
 	<div
 		class="modal fade"
