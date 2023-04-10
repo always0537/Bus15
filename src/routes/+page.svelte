@@ -18,6 +18,24 @@
             console.log(err);
         });
     });
+
+    let selectedId : string;
+    async function loginInDev(){
+        const token = await fetch('/api/simulateLogin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({_id: selectedId})
+            }).then(async (res) => {
+                let token = await res.json();
+                console.log(token);
+                return token;
+            }).catch((err) => {
+                console.log(err);
+            });
+        localStorage.setItem('token', token);
+    }
 </script>
 
 <div class="container-md text-center" style="paddind: 3rem;">
@@ -29,12 +47,12 @@
             </button>
         </div>
         <div class="row m-3 p-3">
-            <select name="user" class="form-select">
+            <select name="user" class="form-select" bind:value={selectedId}>
                 {#each users as user}
                 <option value={user._id}>{user.lineName}</option>
                 {/each}
             </select>
-            <button class="btn btn-secondary" formaction="?/loginInDev">
+            <button type="button" class="btn btn-secondary" on:click={loginInDev}>
                 模擬登入
             </button>
         </div>
