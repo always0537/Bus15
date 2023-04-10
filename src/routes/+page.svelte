@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import type User from '@Models/User.js';
-	import { onMount } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import type { ActionData } from './$types.js';
 	import { error } from '@sveltejs/kit';
 
     export let data;
-    
     let users : User[] = [];
     onMount(async () => {
         users = await fetch('/api/simulateLogin', {
@@ -17,10 +16,13 @@
         }).catch((err) => {
             console.log(err);
         });
+
     });
 
     let selectedId : string;
     let form : ActionData;
+
+    const loginUser = data.isLogin ? getContext('user') : null;
 </script>
 
 <div class="container-md text-center" style="paddind: 3rem;">
@@ -49,5 +51,8 @@
         </div>
         {/if}
     </form>
+    {:else}
+        <p>Hi! {loginUser.lineName}</p>
     {/if}
+
 </div>

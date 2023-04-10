@@ -1,15 +1,18 @@
 <script lang="ts">
 	import type { Modal } from 'bootstrap';
 	import Header from './Header.svelte';
-	import { onMount } from 'svelte';
+	import { getContext, onMount, setContext } from 'svelte';
 	import { LoadingViewStore } from '@Models/LoadingView';
 	let bootstrap: any;
+	export let data;
+
 	onMount(async () => {
 		bootstrap = await import('bootstrap');
 		LoadingViewStore.set(new bootstrap.Modal(document.getElementById('LoadingView')));
 	});
+	
+	if(data.isLogin) setContext('user', data.user);
 
-	export let data;
 </script>
 
 <div>
