@@ -14,6 +14,7 @@ export const GET = async ({url}): Promise<Response> => {
         status: 400,
         message: "",
         user: null as User | null,
+        token: ""
     };
     if(lineIdToken == null) return new Response(JSON.stringify({status: 400, message: "無效的憑證"}), {status: 400});
     try {        
@@ -32,16 +33,16 @@ export const GET = async ({url}): Promise<Response> => {
             //check if user is bus member
             const checkBusMember = await isBusMember(lineIdToken.name);
             if (checkBusMember.result) await addNewUser(newBusUser);
-            result = (checkBusMember.result) ? { status: 200, message: "註冊成功", user: newBusUser }
-                : { status: 400, message: "非巴士團成員", user: null };
+            result = (checkBusMember.result) ? { status: 200, message: "註冊成功", user: newBusUser, token: jwtFromLine }
+                : { status: 400, message: "非巴士團成員", user: null, token: "" };
         }
         else {
-            result = { status: 200, message: "登入成功", user: user };
+            result = { status: 200, message: "登入成功", user: user, token: jwtFromLine };
         }
     }
     catch (err) {
         console.log(err);
-        result = { status: 500, message: "伺服器錯誤", user: null };
+        result = { status: 500, message: "伺服器錯誤", user: null, token: "" };
     }
     finally{
         return new Response(JSON.stringify(result), { status: result.status });

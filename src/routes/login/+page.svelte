@@ -6,39 +6,30 @@
 	import { goto } from '$app/navigation';
     
     export let data: PageData;
-    export let form: ActionData;
 
     onMount(async () => {
         const code = new URLSearchParams(window.location.search).get('code');
-        console.log(form);
-        if(form?.success == false){
-            alert(form.error);
-        }
+        const forms = document.querySelector('form');
         if(code != null){
-            const loginForm = document.querySelector('form');
-            loginForm!.submit();
-        }
-        else if (form?.success == false){
+            await fetch('/api/login?code='+code, {
+                method: 'GET',
+            }).then(async (res) => {
+                const data = await res.json();
+                if(res.ok){
+                    localStorage.setItem('user', data.user);
+                    forms?.append('token', data.token);
+                }else{
+                    alert(data.message);
+                    goto('/')
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
         }
         else{
             goto('/');
         }
     });
-
-    // async function login() {
-    //     const code = new URLSearchParams(window.location.search).get('code');
-    //     if(code != null ){
-    //         await fetch('/api/login?code='+code, {
-    //             method: 'GET',
-    //         }).then(async (res) => {
-    //             const json = await res.json();
-    //             console.log(json);                
-    //         }).catch((err) => {
-    //             console.log(err);
-    //         });
-    //     }
-    // }
-
 </script>
 
 <div class="container-md text-center" style="paddind: 3rem;">
@@ -51,6 +42,6 @@
         <div class="spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
-      </div>
+    </div>
     </form>
 </div>
