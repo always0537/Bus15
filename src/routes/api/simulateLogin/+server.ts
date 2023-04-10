@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types';
 import { MongoDb_ConnectionString, JWT_secret } from '$env/static/private';
 import { MongoClient } from 'mongodb';
 import type User from '@Models/User';
-import * as JWT from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 const client = new MongoClient(MongoDb_ConnectionString);
 
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({request}) => {
         const loginUser = await database.collection<User>('Users').findOne({_id: loginId});
         //return json web token
         if(loginUser){
-            const token = JWT.sign(loginUser, JWT_secret);
+            const token = jwt.sign(loginUser, JWT_secret);
             return new Response(JSON.stringify({token: token}), { status: 200 });
         }
         else{

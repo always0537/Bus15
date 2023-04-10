@@ -1,7 +1,6 @@
 import * as env from '$env/static/private';
 import * as line from '../util/LineUtil';
-import { setContext } from 'svelte';
-
+import {fail, redirect} from '@sveltejs/kit';
 const lineLoginLink: string = (`https://access.line.me/oauth2/v2.1/authorize?response_type=code
 &client_id=${env.LINE_client_id}
 &redirect_uri=${env.LINE_redirect_uri}login
@@ -20,25 +19,29 @@ export const actions = {
     loginInDev: async ({request, fetch, cookies}) => {
         const data = await request.formData();
         const user = data.get('user');
-        const token = await fetch('/api/simulateLogin', {
+        const response = await fetch('/api/simulateLogin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({_id: user})
             }).then(async (res) => {
-                return await res.json();
+                let data = await res.json();
+                if(res.ok){
+                    cookies.set('token', data.token, {
+                        httpOnly: true,
+                        path: '/',
+                        secure: true,
+                        sameSite: 'strict',
+                        maxAge: 60 * 60 * 24 * 7 // 1 week
+                    });
+                    return redirect(303, '/');
+                }
+                else{
+                    return fail(500, {success: false, error: data.message});
+                }
             }).catch((err) => {
-                console.log(err);
+                return fail(500, {success:false, error: err.message});
             });
-        if(token != null){
-            cookies.set('token', token, {
-                httpOnly: true,
-                path: '/',
-                secure: true,
-                sameSite: 'strict',
-                maxAge: 60 * 60 * 24 * 7 // 1 week
-            });
-        }
     }
 }
