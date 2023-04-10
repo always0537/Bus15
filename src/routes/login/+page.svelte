@@ -7,7 +7,7 @@
 
 	export let data: PageData;
 	let tokenForm: HTMLFormElement;
-	let token: string;
+	let tokenInput: HTMLInputElement;
 	onMount(async () => {
 		const code = new URLSearchParams(window.location.search).get('code');
 		if (code != null) {
@@ -17,7 +17,7 @@
 				.then(async (res) => {
 					const data = await res.json();
 					if (res.ok) {
-						token = data.token;
+						tokenInput.value = data.token;
 						tokenForm.submit();
 					} else {
 						alert(data.message);
@@ -38,7 +38,7 @@
 		<div class="row m-3">
 			<h3>登入中</h3>
 			<div>
-				<input type="text" name="token" bind:value={token} />
+				<input type="text" name="token" bind:this={tokenInput} />
 				<button type="submit">登入</button>
 			</div>
 		</div>
