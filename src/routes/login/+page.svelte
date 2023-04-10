@@ -5,13 +5,13 @@
     
     export let data: PageData;
 
-    onMount(async () => {
-        const code = new URLSearchParams(window.location.search).get('code');
-        if(code != null){
-            const loginForm = document.querySelector('form');
-            loginForm!.submit();
-        }
-    });
+    // onMount(async () => {
+    //     const code = new URLSearchParams(window.location.search).get('code');
+    //     if(code != null){
+    //         const loginForm = document.querySelector('form');
+    //         loginForm!.submit();
+    //     }
+    // });
 
     export let form : ActionData;
 </script>
@@ -20,7 +20,7 @@
 	<div class="row m-3">
 		<h3>登入中</h3>
         <form method="post" use:enhance>
-            <button type="submit" style="display:none"></button>
+            <button type="submit">登入</button>
         </form>
 	</div>        
     <div class="row m-3">
