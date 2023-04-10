@@ -13,17 +13,25 @@
     //     }
     // });
 
-    export let form : ActionData;
+    async function login() {
+        const code = new URLSearchParams(window.location.search).get('code');
+        if(code != null ){
+            await fetch('/api/login?code='+code, {
+                method: 'GET',
+            }).then(async (res) => {
+                const json = await res.json();
+                console.log(json);                
+            }).catch((err) => {
+                console.log(err);
+            });
+        }
+    }
+
 </script>
 
 <div class="container-md text-center" style="paddind: 3rem;">
 	<div class="row m-3">
 		<h3>登入中</h3>
-        <form method="post" use:enhance>
-            <button type="submit">登入</button>
-        </form>
+        <button type="button" on:click={login}>登入</button>
 	</div>        
-    <div class="row m-3">
-        {form?.result}
-    </div>
 </div>
