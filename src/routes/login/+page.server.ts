@@ -1,5 +1,5 @@
 import * as env from '$env/static/private';
-import { redirect, type Actions } from '@sveltejs/kit';
+import { redirect, type Actions, fail } from '@sveltejs/kit';
 import * as line from '../../util/LineUtil';
 import { setContext } from 'svelte';
 
@@ -12,30 +12,23 @@ export const actions: Actions = {
         const code = event.url.searchParams.get('code');
 
         if(code){
-            const jwtFromLine = await line.GetJWTfromLineCode(code);        
-            const userInfo = line.GetLineDecode(jwtFromLine);
-            console.log({userInfo: userInfo});
-
-            await event.fetch('/api/login', {
-                method: 'POST',
+            await event.fetch(`/api/login?code=${code}`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(userInfo)
-            }).then((res) => {
-                return {success: true, result: res};
-                // if(res.ok) {
-                //     event.cookies.set('token', jwtFromLine, {
-                //         httpOnly: true,
-                //         path: '/',
-                //         secure: true,
-                //         sameSite: 'strict',
-                //         maxAge: 60 * 60 * 24 * 7 // 1 week
-                //     });
-                // }
-                // throw redirect(303, '/');
+            }).then(async (res) => {
+                const data = await res.json();
+                console.log(res);
+                console.log(data);
+                if(res.status == 200){
+                    return data;
+                }
+                else{
+                    return fail(data.status, {success: false, error: data.message});
+                }
             }).catch((err) => {
-                return {success: false, result: err};
+                return {success: false, error: `${err.name}: ${err.message}`};
             });             
         }
         else{

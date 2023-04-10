@@ -10,12 +10,12 @@ export const GET = async ({url}): Promise<Response> => {
     const code = url.searchParams.get('code');
     const jwtFromLine = await line.GetJWTfromLineCode(code!);
     const lineIdToken = line.GetLineDecode(jwtFromLine) as LineIdToken;
-
     let result = {
         status: 400,
         message: "",
         user: null as User | null,
     };
+    if(lineIdToken == null) return new Response(JSON.stringify({status: 400, message: "無效的憑證"}), {status: 400});
     try {        
         //check if user exists
         const user = await isUserRegistered(lineIdToken.sub);
@@ -50,11 +50,7 @@ export const GET = async ({url}): Promise<Response> => {
 
 export const POST = async ({request}): Promise<Response> => {
     const lineIdToken = await request.json();
-    let result = {
-        status: 400,
-        message: "",
-        user: null as User | null,
-    };
+    if(lineIdToken.sub == null) return new Response(JSON.stringify({status: 400, message: "無效的LineIdToken"}), { status: 400 });
     try {        
         //check if user exists
         const user = await isUserRegistered(lineIdToken.sub);
