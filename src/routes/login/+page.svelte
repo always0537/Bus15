@@ -34,12 +34,12 @@
 </script>
 
 <div class="container-md text-center" style="paddind: 3rem;">
-	<form method="post" bind:this={tokenForm}>
+	<form method="post" bind:this={tokenForm} action="?/setToken">
 		<div class="row m-3">
 			<h3>登入中</h3>
 			<div>
 				<input type="text" name="token" bind:value={token} />
-				<button type="submit" formaction="?/setToken">登入</button>
+				<button type="submit">登入</button>
 			</div>
 		</div>
 		<div class="d-flex justify-content-center">
