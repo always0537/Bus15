@@ -6,10 +6,7 @@
 	import { error } from '@sveltejs/kit';
 
     export let data;
-
-    function lineLogin(){
-        window.location.href = data.lineLoginLink;
-    }
+    
     let users : User[] = [];
     onMount(async () => {
         users = await fetch('/api/simulateLogin', {
@@ -30,7 +27,7 @@
     {#if data.isLogin == false}
     <form method="POST">
         <div class="row m-3">
-            <button type="button" class="btn btn-success">
+            <button type="button" class="btn btn-success" on:click={()=>window.location.href=data.lineLoginLink}>
                 Line登入
             </button>
         </div>

@@ -1,4 +1,4 @@
-import * as Jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import * as env from '$env/static/private';
 import type LineIdToken from "@Models/LineIdToken";
@@ -29,4 +29,4 @@ export async function GetJWTfromLineCode(code: string): Promise<string> {
     return json.id_token as string;
 }
 
-export const GetLineDecode = (id_token: string) => Jwt.decode(id_token) as LineIdToken | null;
+export const GetLineDecode = (id_token: string) => jwt.decode(id_token) as LineIdToken | null;
