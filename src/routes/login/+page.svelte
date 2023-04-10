@@ -6,7 +6,7 @@
 	import { goto } from '$app/navigation';
     
     export let data: PageData;
-
+    let token : string;
     onMount(async () => {
         const code = new URLSearchParams(window.location.search).get('code');
         const forms = document.querySelector('form');
@@ -17,6 +17,8 @@
                 const data = await res.json();
                 if(res.ok){
                     console.log(data);
+                    token = data.token;
+                    forms?.submit();
                 }else{
                     alert(data.message);
                     goto('/')
@@ -35,7 +37,8 @@
     <form method="post" >
 	<div class="row m-3">
 		<h3>登入中</h3>
-        <button type="button" style="display: none">登入</button>
+        <input type="text" name="token" bind:value={token}>
+        <button type="submit" style="display: none" formaction="?/setToken">登入</button>
 	</div>
     <div class="d-flex justify-content-center">
         <div class="spinner-border" role="status">

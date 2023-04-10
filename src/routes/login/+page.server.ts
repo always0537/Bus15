@@ -9,10 +9,9 @@ export const load = (async (event) => {
 });
 
 export const actions: Actions = {
-    default: async (event) => {
-        const data = await event.request.formData();
-        const token = data.get('token') as string;
-
+    setToken: async (event) => {
+        const token = (await event.request.formData()).get('token') as string;
+        console.log(token);
         event.cookies.set('token', token, {
             path: '/',
             maxAge: 60 * 60 * 24 * 7,
