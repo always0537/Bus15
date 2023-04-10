@@ -1,20 +1,39 @@
 <script lang="ts">
+	import type User from '@Models/User.js';
+	import { onMount } from 'svelte';
+
     export let data;
 
     function lineLogin(){
         window.location.href = data.lineLoginLink;
     }
+    let users : User[] = [];
+    onMount(async () => {
+        users = await fetch('/api/simulateLogin', {
+            method: 'GET',
+        }).then(async (res) => {
+            const json = await res.json();
+            return json;
+        }).catch((err) => {
+            console.log(err);
+        });
+    });
 </script>
 
 <div class="container-md text-center" style="paddind: 3rem;">
-    {#if data.isLogin == false}
+    {#if localStorage.user == false}
     <form method="POST">
         <div class="row m-3">
             <button type="button" class="btn btn-success" on:click={lineLogin}>
                 Line登入
             </button>
         </div>
-        <div class="row m-3">
+        <div class="row m-3 p-3">
+            <select name="user" class="form-select">
+                {#each users as user}
+                <option value={user._id}>{user.lineName}</option>
+                {/each}
+            </select>
             <button class="btn btn-secondary" formaction="?/loginInDev">
                 模擬登入
             </button>
