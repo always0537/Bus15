@@ -16,9 +16,7 @@
             }).then(async (res) => {
                 const data = await res.json();
                 if(res.ok){
-                    localStorage.setItem('user', data.user);
-                    forms?.append('token', data.token);
-                    forms?.submit();
+                    console.log(data);
                 }else{
                     alert(data.message);
                     goto('/')
