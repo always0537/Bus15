@@ -1,4 +1,4 @@
-import * as JWT from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import * as env from '$env/static/private';
 
 export const load = (async (event) => {
@@ -7,8 +7,8 @@ export const load = (async (event) => {
     //verify token
     if(token){
         try{
-            const verify = JWT.verify(token, env.JWT_secret);
-            const decoded = JWT.decode(token);
+            const verify = jwt.verify(token, env.JWT_secret);
+            const decoded = jwt.decode(token);
             isLogin = true;
         }
         catch{
