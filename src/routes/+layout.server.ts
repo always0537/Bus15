@@ -1,3 +1,6 @@
 export const load = (async (event) => {
-    console.log({user: event.locals.user})
+    const token = event.cookies.get('token');
+    return {
+        isLogin: token !== undefined,
+    }
 });

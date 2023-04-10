@@ -11,7 +11,7 @@ export async function GetJWTfromLineCode(code: string): Promise<string> {
     let formBody: URLSearchParams = new URLSearchParams();
     formBody.append('grant_type', 'authorization_code');
     formBody.append('code', code);
-    formBody.append('redirect_uri', env.LINE_redirect_uri);
+    formBody.append('redirect_uri', env.LINE_redirect_uri + 'login');
     formBody.append('client_id', env.LINE_client_id);
     formBody.append('client_secret', env.LINE_client_secret);
 

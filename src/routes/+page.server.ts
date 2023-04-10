@@ -10,6 +10,7 @@ const lineLoginLink: string = (`https://access.line.me/oauth2/v2.1/authorize?res
 
 export const load = (async ({cookies, url}) => {
     return {
+        isLogin: false,
         lineLoginLink: lineLoginLink,
     };
 })

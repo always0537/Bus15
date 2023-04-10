@@ -70,7 +70,7 @@ async function isBusMember(lineName: string): Promise<any> {
         await client.connect();
         const database = client.db("BusCards");
         const members = await database.collection("Members").find({});
-        members.forEach((member) => {
+        await members.forEach((member) => {
             member.keywords.forEach((keyword: string) => {
                 if (lineName.includes(keyword)) {
                     result.result = true;
