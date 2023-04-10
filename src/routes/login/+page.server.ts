@@ -23,16 +23,19 @@ export const actions: Actions = {
                 },
                 body: JSON.stringify(userInfo)
             }).then((res) => {
-                if(res.ok) {
-                    event.cookies.set('token', jwtFromLine, {
-                        httpOnly: true,
-                        path: '/',
-                        secure: true,
-                        sameSite: 'strict',
-                        maxAge: 60 * 60 * 24 * 7 // 1 week
-                    });
-                }
-                throw redirect(303, '/');
+                return {success: true, result: res};
+                // if(res.ok) {
+                //     event.cookies.set('token', jwtFromLine, {
+                //         httpOnly: true,
+                //         path: '/',
+                //         secure: true,
+                //         sameSite: 'strict',
+                //         maxAge: 60 * 60 * 24 * 7 // 1 week
+                //     });
+                // }
+                // throw redirect(303, '/');
+            }).catch((err) => {
+                return {success: false, result: err};
             });             
         }
         else{
