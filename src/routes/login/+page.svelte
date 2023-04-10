@@ -37,7 +37,7 @@
 	<form method="post" bind:this={tokenForm} action="?/setToken">
 		<div class="row m-3">
 			<h3>登入中</h3>
-			<div>
+			<div style="display: none">
 				<input type="text" name="token" bind:this={tokenInput} />
 				<button type="submit">登入</button>
 			</div>
