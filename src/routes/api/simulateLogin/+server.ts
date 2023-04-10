@@ -30,14 +30,14 @@ export const POST: RequestHandler = async ({request}) => {
         //return json web token
         if(loginUser){
             const token = JWT.sign(loginUser, JWT_secret);
-            return new Response(JSON.stringify(token), { status: 200 });
+            return new Response(JSON.stringify({token: token}), { status: 200 });
         }
         else{
-            return new Response(JSON.stringify({status: 400, message: "無此使用者"}), { status: 400 });
+            return new Response(JSON.stringify({message: "無此使用者"}), { status: 400 });
         }
     }
-    catch{
-        return new Response(JSON.stringify({status: 500, message: "伺服器錯誤"}), { status: 500 });
+    catch (err) {
+        return new Response(JSON.stringify({message: err}), { status: 500 });
     }
     finally{
          client.close();
