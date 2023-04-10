@@ -26,8 +26,8 @@ export const actions = {
                 'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({_id: user})
-            }).then((res) => {
-                return res.json();
+            }).then(async (res) => {
+                return await res.json();
             }).catch((err) => {
                 console.log(err);
             });
