@@ -10,7 +10,6 @@
     let token : string;
     onMount(async () => {
         const code = new URLSearchParams(window.location.search).get('code');
-        const forms = document.querySelector('form');
         if(code != null){
             await fetch('/api/login?code='+code, {
                 method: 'GET',
@@ -19,7 +18,7 @@
                 if(res.ok){
                     console.log(data);
                     token = data.token;
-                    tokenForm.click();
+                    // tokenForm.click();
                 }else{
                     alert(data.message);
                     goto('/')

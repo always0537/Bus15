@@ -7,7 +7,7 @@ export const load = (async (event) => {
     //verify token
     if(token != null){
         try{
-            const decoded = jwt.decode(token);
+            const verifier = jwt.verify(token, env.JWT_secret);
             isLogin = true;
         }
         catch{

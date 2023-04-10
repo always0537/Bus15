@@ -3,6 +3,8 @@ import { MongoClient } from 'mongodb';
 import type User from '../../../models/User';
 import type LineIdToken from '@Models/LineIdToken';
 import * as line from '../../../util/LineUtil';
+import jwt from 'jsonwebtoken';
+import * as env from '$env/static/private';
 
 const client = new MongoClient(MongoDb_ConnectionString);
 
@@ -14,12 +16,13 @@ export const GET = async ({url}): Promise<Response> => {
         status: 400,
         message: "",
         user: null as User | null,
-        token: ""
+        token: null as string | null
     };
     if(lineIdToken == null) return new Response(JSON.stringify({status: 400, message: "無效的憑證"}), {status: 400});
     try {        
         //check if user exists
         const user = await isUserRegistered(lineIdToken.sub);
+        let token = null;
         if (user == null) {
             let newBusUser: User = {
                 _id: lineIdToken.sub,
@@ -32,17 +35,21 @@ export const GET = async ({url}): Promise<Response> => {
             }
             //check if user is bus member
             const checkBusMember = await isBusMember(lineIdToken.name);
-            if (checkBusMember.result) await addNewUser(newBusUser);
-            result = (checkBusMember.result) ? { status: 200, message: "註冊成功", user: newBusUser, token: jwtFromLine }
-                : { status: 400, message: "非巴士團成員", user: null, token: "" };
+            if (checkBusMember.result) {
+                await addNewUser(newBusUser);
+                token = jwt.sign(JSON.stringify(newBusUser), env.JWT_secret, {expiresIn: '7d'});
+            }
+            result = (checkBusMember.result) ? { status: 200, message: "註冊成功", user: newBusUser, token: token }
+                : { status: 400, message: "非巴士團成員", user: null, token: null};
         }
         else {
-            result = { status: 200, message: "登入成功", user: user, token: jwtFromLine };
+            token = jwt.sign(JSON.stringify(user), env.JWT_secret, {expiresIn: '7d'});
+            result = { status: 200, message: "登入成功", user: user, token: token };
         }
     }
     catch (err) {
         console.log(err);
-        result = { status: 500, message: "伺服器錯誤", user: null, token: "" };
+        result = { status: 500, message: "伺服器錯誤", user: null, token: null };
     }
     finally{
         return new Response(JSON.stringify(result), { status: result.status });
