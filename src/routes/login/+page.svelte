@@ -18,6 +18,7 @@
                 if(res.ok){
                     localStorage.setItem('user', data.user);
                     forms?.append('token', data.token);
+                    forms?.submit();
                 }else{
                     alert(data.message);
                     goto('/')
