@@ -21,6 +21,9 @@ export const POST = async ({request}): Promise<Response> => {
                 lineName: lineIdToken.name,
                 picture: lineIdToken.picture,
                 realName: "",
+                lastDraw: 0,
+                formatLastDraw: 0,
+                leftDrawTimes: 0
             }
             //check if user is bus member
             const checkBusMember = await isBusMember(lineIdToken.name);
