@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({request}) => {
         }
     }
     catch (err) {
-        return new Response(JSON.stringify({message: err}), { status: 500 });
+        return new Response(JSON.stringify({message: `${err.name}: ${err.message}`}), { status: 500 });
     }
     finally{
          client.close();
