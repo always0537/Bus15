@@ -60,6 +60,7 @@
 				drawCard(1);
 			}}>單抽出奇蹟測試</button
 		>
+		<Card displayType="back" on:click={() => {drawCard(1);}}></Card>
 	</div>
 </div>
 <div class="row">

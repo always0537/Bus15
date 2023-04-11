@@ -36,8 +36,8 @@
 <div class="accordion" id="accordionExample">
 	{#each cardList as card}
 		<AccordionItem Title={`${card._id}-${card.name}`} ID={card._id?.toString()} Qty={card.qty}>
-			<Card cardTitle={card.name} imgPath={card.img}>
-				<button on:click={openModal(card)}>點擊詳細</button>
+			<Card cardTitle={card.name} imgPath={card.img} displayType="simple">
+				<button class="check-card" on:click={openModal(card)}>點擊詳細</button>
 			</Card>
 		</AccordionItem>
 	{/each}
@@ -57,8 +57,7 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
 			</div>
 			<div class="modal-body">
-				<Card cardTitle={modalCard?.name} imgPath={modalCard?.img}>
-					<p class="card-text">{modalCard?.description}</p>
+				<Card displayType="detail" cardTitle={modalCard?.name} imgPath={modalCard?.img} cardDetail={modalCard?.description}>
 				</Card>
 			</div>
 			<div class="modal-footer justify-content-center">
@@ -68,3 +67,13 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	.check-card {
+		background-color: transparent;
+		border: none;
+		color: white;
+		height: 50px;
+		width: 120px;
+	}
+</style>
