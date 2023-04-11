@@ -20,7 +20,7 @@
 		<Header isLogin={data.isLogin} />
 	</header>
 
-	<main>
+	<main style="margin-top: 4.5rem;">
 		<div class="container body-content my-2">
 			<slot />
 		</div>
