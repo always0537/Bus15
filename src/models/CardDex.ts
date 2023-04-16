@@ -1,8 +1,8 @@
-import Card from "@Components/Card.svelte";
 import type { ObjectId } from "mongodb";
 
 export default class CardDex {
   public qty: number = 0;
+  public displayType: $displayType = "back";
   constructor(
     public name?: string,
     public level?: number,
@@ -13,6 +13,7 @@ export default class CardDex {
   ) {
   }
 }
+export type $displayType = "simple" | "detail" | "back";
 
 export class CardDexWithRecordGroup extends CardDex {
   constructor(

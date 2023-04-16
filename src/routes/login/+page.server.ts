@@ -1,10 +1,10 @@
 import * as env from '$env/static/private';
-import { redirect, type Actions, fail } from '@sveltejs/kit';
+import { redirect, type Actions, fail, type ServerLoadEvent } from '@sveltejs/kit';
 import * as line from '../../util/LineUtil';
 import { setContext } from 'svelte';
 import jwt from 'jsonwebtoken';
 
-export const load = (async (event) => {
+export const load = (async (event: ServerLoadEvent) => {
 
 });
 
@@ -19,6 +19,6 @@ export const actions: Actions = {
             sameSite: 'strict',
             secure: true
         });
-        throw redirect(303,'/');
+        throw redirect(303, '/');
     },
 }

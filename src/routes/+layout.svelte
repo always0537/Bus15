@@ -8,11 +8,11 @@
 
 	onMount(async () => {
 		bootstrap = await import('bootstrap');
-		LoadingViewStore.set(new bootstrap.Modal(document.getElementById('LoadingView')));
+		let loadingView: Modal = new bootstrap.Modal(document.getElementById('LoadingView'));
+		LoadingViewStore.set(loadingView);
 	});
-	
-	if(data.isLogin) setContext('user', data.user);
 
+	if (data.isLogin) setContext('user', data.user);
 </script>
 
 <div>

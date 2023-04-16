@@ -102,13 +102,18 @@ export default async function DrawCard(playerID: string, drawQty: number = 1, sa
     };
     try {
       await db_session.withTransaction(async () => {
-        for (let i = 0; i < getCardList.length; i++) {
-          let getCard = getCardList[i];
-          let insertResult = await db.collection("CardRecord").insertOne({ playerId: playerID, cardStatus: 1, cardId: getCard._id, sellPrice: 0 }, { session: db_session })
-          if (!insertResult.acknowledged) {
-
-            throw "卡片資料新增失敗";
+        let insertDocuments: any[] = getCardList.map(n => {
+          return {
+            playerId: playerID,
+            cardStatus: 1,
+            cardId: n._id,
+            sellPrice: 0
           }
+        })
+        let insertResult = await db.collection("CardRecord").insertMany(insertDocuments, { session: db_session })
+        if (!insertResult.acknowledged) {
+
+          throw "卡片資料新增失敗";
         }
         let updateResult = await db.collection<User>("Users").updateOne({ "_id": playerID }, { $set: { "lastDraw": (userInfo!.formatLastDraw + getCardList.length) } }, { session: db_session })
         if (!updateResult.acknowledged) {

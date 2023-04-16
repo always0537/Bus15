@@ -6,6 +6,7 @@
 	<title>Shop</title>
 	<meta name="description" content="BuySomething" />
 </svelte:head>
+<!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
 <ul class="nav nav-tabs" id="myTab" role="tablist">
 	<li class="nav-item" role="presentation">
 		<button

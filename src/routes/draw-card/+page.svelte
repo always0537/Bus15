@@ -3,7 +3,7 @@
 	import type CardDex from '@Models/CardDex';
 	import { LoadingView } from '@Models/LoadingView';
 	import type { Modal } from 'bootstrap';
-	import { onMount } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 
 	let resultList: CardDex[] = new Array();
 	let resultModal: Modal;
@@ -23,26 +23,15 @@
 			method: 'post'
 		});
 		let result = await response.json();
-		resultList = result.ReturnValue;
+		resultList = result.ReturnValue.map((n: CardDex) => {
+			n.displayType = 'back';
+			return n;
+		});
 		LoadingView?.hide();
 		if (resultList.length === 0) {
 			return;
 		}
 
-		resultModal.show();
-		console.log(`takeTime : ${Date.now() - InitStart}`);
-	};
-	const drawCard1 = async (): Promise<void> => {
-		let InitStart = Date.now();
-
-		LoadingView?.show();
-		let response = await fetch('/api/draw-card10');
-		let result = await response.json();
-		resultList = result.ReturnValue;
-		LoadingView?.hide();
-		if (resultList.length === 0) {
-			return;
-		}
 		resultModal.show();
 		console.log(`takeTime : ${Date.now() - InitStart}`);
 	};
@@ -60,7 +49,12 @@
 				drawCard(1);
 			}}>單抽出奇蹟測試</button
 		>
-		<Card displayType="back" on:click={() => {drawCard(1);}}></Card>
+		<Card
+			displayType="back"
+			on:click={() => {
+				drawCard(1);
+			}}
+		/>
 	</div>
 </div>
 <div class="row">
@@ -70,16 +64,6 @@
 			on:click={() => {
 				drawCard(10);
 			}}>一次來十張</button
-		>
-	</div>
-</div>
-<div class="row">
-	<div class="col text-center">
-		<button
-			class="btn btn-danger m-2 d-inline"
-			on:click={() => {
-				drawCard1();
-			}}>test</button
 		>
 	</div>
 </div>
@@ -101,12 +85,22 @@
 				</div>
 				<div class="modal-body">
 					{#if resultList.length == 1}
-						<Card cardTitle={resultList[0].name} imgPath={resultList[0].img} />
+						<Card
+							turnStytle={'simple'}
+							displayType={resultList[0].displayType}
+							cardTitle={resultList[0].name}
+							imgPath={resultList[0].img}
+						/>
 					{:else}
 						<div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-4">
 							{#each resultList as card}
 								<div class="col">
-									<Card cardTitle={card.name} imgPath={card.img} />
+									<Card
+										turnStytle={'simple'}
+										displayType={card.displayType}
+										cardTitle={card.name}
+										imgPath={card.img}
+									/>
 								</div>
 							{/each}
 						</div>
